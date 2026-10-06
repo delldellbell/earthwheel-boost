@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Earthwheel Boost</string>
+    <string name="lang_switch">🇷🇴 Română</string>
+    <string name="conn_starting">●  Εκκίνηση…</string>
+    <string name="mode_snail">ΣΑΛΙΓΚΑΡΙ</string>
+    <string name="mode_rocket">ΠΥΡΑΥΛΟΣ</string>
+    <string name="mode_wait">Αναμονή σύνδεσης με το σκούτερ</string>
+    <string name="mode_rocket_sub">Μέγιστη ταχύτητα · ρελέ ΕΝΕΡΓΟ</string>
+    <string name="mode_snail_sub">Κανονική ταχύτητα · ρελέ ΑΝΕΝΕΡΓΟ</string>
+    <string name="sec_title">🔒  Ασφάλεια</string>
+    <string name="btn_change_pin">Αλλαγή κωδικού</string>
+    <string name="btn_set_pin">Ορισμός κωδικού</string>
+    <string name="btn_remove_pin">Αφαίρεση κωδικού</string>
+    <string name="btn_email">Email ανάκτησης</string>
+    <string name="btn_recover">Ξέχασα τον κωδικό – αποστολή με email</string>
+    <string name="sw_app_lock">Ζήτα κωδικό στο άνοιγμα της εφαρμογής</string>
+    <string name="rf_title">📡  Τηλεχειριστήριο RF</string>
+    <string name="btn_rf_learn">Σύζευξη τηλεχειριστηρίου</string>
+    <string name="btn_rf_clear">Διαγραφή τηλεχειριστηρίου</string>
+    <string name="btn_forget">Σύνδεση με άλλη πλακέτα</string>
+    <string name="perm_denied">Χωρίς άδεια Bluetooth η εφαρμογή δεν μπορεί να συνδεθεί με το σκούτερ.</string>
+    <string name="key_missing_title">Λείπει το κλειδί</string>
+    <string name="key_missing_msg">Αυτό το αντίγραφο της εφαρμογής δεν περιέχει το κλειδί ασφαλείας (assets/ew_key.bin) και δεν μπορεί να συνδεθεί με το σκούτερ. Εγκαταστήστε το APK που λάβατε από τον Claude ή μεταγλωττίστε το πλήρες έργο από το αρχείο.</string>
+    <string name="no_bt">Το τηλέφωνο δεν διαθέτει Bluetooth.</string>
+    <string name="conn_off">●  Αποσυνδεδεμένο</string>
+    <string name="conn_bt_off">●  Bluetooth κλειστό – πατήστε εδώ</string>
+    <string name="conn_scanning">●  Αναζήτηση σκούτερ…</string>
+    <string name="conn_connecting">●  Σύνδεση…</string>
+    <string name="conn_auth">●  Έλεγχος ασφαλείας…</string>
+    <string name="conn_need_pin">●  Εισάγετε τον κωδικό (πατήστε εδώ)</string>
+    <string name="conn_locked" formatted="true">●  Κλείδωμα %1$d δ – πάρα πολλοί λάθος κωδικοί</string>
+    <string name="conn_ready">●  Συνδεδεμένο με το σκούτερ</string>
+    <string name="locked_toast" formatted="true">Πάρα πολλές λανθασμένες προσπάθειες. Περιμένετε %1$d δευτερόλεπτα.</string>
+    <string name="pin_changed">Ο κωδικός άλλαξε ✔</string>
+    <string name="pin_removed">Ο κωδικός αφαιρέθηκε. Παραμένει ενεργό το μοναδικό κλειδί της εφαρμογής.</string>
+    <string name="rf_learned">Το τηλεχειριστήριο συνδέθηκε ✔</string>
+    <string name="rf_cleared">Το τηλεχειριστήριο διαγράφηκε</string>
+    <string name="rf_timeout">Δεν λήφθηκε σήμα από το τηλεχειριστήριο.</string>
+    <string name="rf_disabled">Η μονάδα RF δεν είναι ενεργοποιημένη στο firmware (ENABLE_RF 1).</string>
+    <string name="rf_press" formatted="true">Πατήστε τώρα το κουμπί του τηλεχειριστηρίου (%1$d δ)…</string>
+    <string name="cmd_rejected">Η εντολή απορρίφθηκε από την πλακέτα.</string>
+    <string name="pin_info_offline">Συνδεθείτε στο σκούτερ για ρυθμίσεις.</string>
+    <string name="pin_info_on">Ενεργός κωδικός. Μόνο αυτή η εφαρμογή + ο κωδικός σας μπορούν να ελέγξουν το σκούτερ.</string>
+    <string name="pin_info_off">Χωρίς κωδικό: μόνο αυτή η εφαρμογή (μοναδικό κλειδί) μπορεί να συνδεθεί.</string>
+    <string name="rf_not_enabled">Δεν είναι ενεργοποιημένο στο firmware. Έτοιμο για δέκτη 433 MHz (δείτε το README).</string>
+    <string name="rf_waiting">Αναμονή σήματος… πατήστε το κουμπί του τηλεχειριστηρίου.</string>
+    <string name="rf_paired">Τηλεχειριστήριο συνδεδεμένο – ένα πάτημα εναλλάσσει ΣΑΛΙΓΚΑΡΙ/ΠΥΡΑΥΛΟ.</string>
+    <string name="rf_none">Κανένα συνδεδεμένο τηλεχειριστήριο.</string>
+    <string name="hint_pin">Κωδικός σκούτερ</string>
+    <string name="pin_wrong_tries" formatted="true">Λάθος κωδικός. Απομένουν %1$d προσπάθειες.</string>
+    <string name="pin_enter">Εισάγετε τον κωδικό πρόσβασης του σκούτερ.</string>
+    <string name="pin_title">🔒 Κωδικός πρόσβασης</string>
+    <string name="btn_connect">Σύνδεση</string>
+    <string name="pin_digits">Ο κωδικός έχει 4–16 ψηφία.</string>
+    <string name="btn_forgot">Ξέχασα τον κωδικό</string>
+    <string name="btn_later">Αργότερα</string>
+    <string name="hint_new_pin">Νέος κωδικός (4–16 ψηφία)</string>
+    <string name="hint_repeat_pin">Επανάληψη νέου κωδικού</string>
+    <string name="new_pin_title">Νέος κωδικός</string>
+    <string name="btn_save">Αποθήκευση</string>
+    <string name="pin_must_digits">Ο κωδικός πρέπει να έχει 4–16 ψηφία.</string>
+    <string name="pin_mismatch">Οι κωδικοί δεν ταιριάζουν.</string>
+    <string name="btn_cancel">Ακύρωση</string>
+    <string name="remove_pin_title">Αφαίρεση κωδικού;</string>
+    <string name="remove_pin_msg">Το σκούτερ θα μπορεί να ελέγχεται από αυτή την εφαρμογή χωρίς κωδικό. Η σύνδεση παραμένει προστατευμένη από το μοναδικό κλειδί της εφαρμογής.</string>
+    <string name="hint_email">Email ανάκτησης</string>
+    <string name="email_gmail_info">\nΠροαιρετικά – αυτόματη αποστολή μέσω Gmail:\n(λογαριασμός Gmail + κωδικός εφαρμογής από Google › Ασφάλεια › Κωδικοί πρόσβασης εφαρμογών)</string>
+    <string name="hint_gmail">Λογαριασμός Gmail αποστολέα</string>
+    <string name="hint_app_pass_saved">Κωδικός εφαρμογής (αποθηκευμένος)</string>
+    <string name="hint_app_pass">Κωδικός εφαρμογής (16 χαρακτήρες)</string>
+    <string name="email_title">📧 Email ανάκτησης</string>
+    <string name="email_invalid">Μη έγκυρο email.</string>
+    <string name="email_deleted">Το email διαγράφηκε.</string>
+    <string name="email_saved">Το email αποθηκεύτηκε ✔</string>
+    <string name="recover_title">Ανάκτηση κωδικού</string>
+    <string name="recover_not_saved">Ο κωδικός δεν είναι αποθηκευμένος σε αυτό το τηλέφωνο.\n\nΕπαναφορά από την πλακέτα: με το σκούτερ αναμμένο, κρατήστε πατημένο το κουμπί BOOT του ESP32 για 10 δευτερόλεπτα (το LED αναβοσβήνει). Ο κωδικός επιστρέφει στον εργοστασιακό.</string>
+    <string name="recover_no_email">Δεν έχετε ορίσει email ανάκτησης. Ορίστε το από το «Email ανάκτησης» όσο θυμάστε τον κωδικό.\n\nΕναλλακτικά: επαναφορά από την πλακέτα (BOOT 10 δ).</string>
+    <string name="mail_subject">Earthwheel Boost – ο κωδικός πρόσβασής σας</string>
+    <string name="mail_body" formatted="true">Γεια σας!\n\nΟ κωδικός πρόσβασης για το σκούτερ σας Earthwheel είναι: %1$s\n\nΑν δεν ζητήσατε αυτό το email, αλλάξτε τον κωδικό από την εφαρμογή.\n\n— Earthwheel Boost</string>
+    <string name="mail_sending">Αποστολή email…</string>
+    <string name="mail_sent_title">Το email στάλθηκε</string>
+    <string name="mail_sent_msg" formatted="true">Ο κωδικός στάλθηκε στο %1$s.</string>
+    <string name="error_title">Σφάλμα</string>
+    <string name="mail_failed">Το email δεν ήταν δυνατό να σταλεί. Ελέγξτε το διαδίκτυο και τον κωδικό εφαρμογής Gmail.</string>
+    <string name="no_mail_app">Δεν υπάρχει εγκατεστημένη εφαρμογή email.</string>
+    <string name="hint_code">Κωδικός</string>
+    <string name="lock_msg">Εισάγετε τον κωδικό για να ανοίξει η εφαρμογή.</string>
+    <string name="btn_open">Άνοιγμα</string>
+    <string name="code_wrong">Λάθος κωδικός.</string>
+    <string name="lock_recover_msg">Για λόγους ασφαλείας, από την κλειδωμένη οθόνη ο κωδικός μπορεί να σταλεί μόνο αυτόματα στο email ανάκτησης (ρυθμισμένο Gmail).\n\nΕναλλακτικά: επανεγκαταστήστε την εφαρμογή και επαναφέρετε την πλακέτα (BOOT 10 δ).</string>
+    <string name="btn_exit">Έξοδος</string>
+    <string name="forget_title">Σύνδεση με άλλη πλακέτα;</string>
+    <string name="forget_msg">Η εφαρμογή θα ξεχάσει την τρέχουσα πλακέτα και τον αποθηκευμένο κωδικό και θα αναζητήσει ξανά.</string>
+    <string name="btn_yes">Ναι</string>
+    <string name="not_ready">Το σκούτερ δεν είναι ακόμη συνδεδεμένο.</string>
+    <string name="clearing_rf">Διαγραφή τηλεχειριστηρίου…</string>
+    <string name="applock_need_pin">Συνδεθείτε πρώτα στο σκούτερ με ενεργό κωδικό.</string>
+</resources>

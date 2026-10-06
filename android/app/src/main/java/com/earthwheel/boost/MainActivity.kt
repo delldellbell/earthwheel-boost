@@ -47,6 +47,7 @@ class MainActivity : Activity(), BleManager.Listener {
         val btnRfLearn: Button = a.findViewById(R.id.btnRfLearn)
         val btnRfClear: Button = a.findViewById(R.id.btnRfClear)
         val btnForget: Button = a.findViewById(R.id.btnForget)
+        val tvLang: TextView = a.findViewById(R.id.tvLang)
     }
 
     private lateinit var ui: Views
@@ -56,7 +57,7 @@ class MainActivity : Activity(), BleManager.Listener {
     private var unlocked = false
     private var relayOn = false
     private var pinDialog: AlertDialog? = null
-    private var pinPromptSnoozed = false   // utilizatorul a ales "Mai târziu"
+    private var pinPromptSnoozed = false   // utilizatorul a ales getString(R.string.btn_later)
     private var keyOk = false              // cheia aplicației e prezentă în APK
     private val io = Executors.newSingleThreadExecutor()
 
@@ -64,7 +65,7 @@ class MainActivity : Activity(), BleManager.Listener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != REQ_PERMS) return
         if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) startBle()
-        else toast("Fără permisiunea Bluetooth aplicația nu se poate conecta la scooter.")
+        else toast(getString(R.string.perm_denied))
     }
 
     @Deprecated("Activity API")
@@ -85,6 +86,15 @@ class MainActivity : Activity(), BleManager.Listener {
     }
 
     // ======================= ciclu de viață =======================
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("unlocked", unlocked)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -99,8 +109,13 @@ class MainActivity : Activity(), BleManager.Listener {
         ui.btnEmail.setOnClickListener { showEmailSettings() }
         ui.btnRecover.setOnClickListener { recoverPin() }
         ui.btnRfLearn.setOnClickListener { rfLearn() }
-        ui.btnRfClear.setOnClickListener { if (ble.rfClear()) toast("Se șterge telecomanda…") else notReady() }
+        ui.btnRfClear.setOnClickListener { if (ble.rfClear()) toast(getString(R.string.clearing_rf)) else notReady() }
         ui.btnForget.setOnClickListener { confirmForget() }
+        ui.tvLang.setOnClickListener {
+            // comută română <-> greacă și redesenează ecranul
+            LocaleHelper.set(this, if (LocaleHelper.current(this) == "el") "ro" else "el")
+            recreate()
+        }
         ui.tvConn.setOnClickListener {
             when (ble.state) {
                 BleManager.Conn.NEED_PIN -> showPinDialog(-1)
@@ -113,7 +128,7 @@ class MainActivity : Activity(), BleManager.Listener {
         ui.swAppLock.setOnCheckedChangeListener { sw, checked ->
             if (checked && store.pin.isNullOrEmpty()) {
                 sw.isChecked = false
-                toast("Conectează-te întâi la scooter cu un cod activ.")
+                toast(getString(R.string.applock_need_pin))
             } else store.appLock = checked
         }
 
@@ -126,10 +141,11 @@ class MainActivity : Activity(), BleManager.Listener {
         else registerReceiver(btReceiver, filter)
 
         if (!keyOk) {
-            info("Cheie lipsă", "Această copie a aplicației nu conține cheia de securitate (assets/ew_key.bin) și nu se poate conecta la scooter. Instalează APK-ul primit de la Claude sau compilează proiectul complet din arhivă.")
+            info(getString(R.string.key_missing_title), getString(R.string.key_missing_msg))
             return
         }
-        if (store.appLock && !store.pin.isNullOrEmpty()) showAppLock() else unlocked = true
+        val wasUnlocked = savedInstanceState?.getBoolean("unlocked") == true
+        if (store.appLock && !store.pin.isNullOrEmpty() && !wasUnlocked) showAppLock() else unlocked = true
     }
 
     override fun onStart() {
@@ -165,7 +181,7 @@ class MainActivity : Activity(), BleManager.Listener {
 
     private fun startBle() {
         val adapter = btAdapter()
-        if (adapter == null) { toast("Telefonul nu are Bluetooth."); return }
+        if (adapter == null) { toast(getString(R.string.no_bt)); return }
         if (!adapter.isEnabled) {
             onConnState(BleManager.Conn.BT_DISABLED, 0)
             try {
@@ -196,22 +212,22 @@ class MainActivity : Activity(), BleManager.Listener {
             ui.btnMode.setBackgroundResource(R.drawable.bg_disabled)
             ui.btnMode.alpha = 0.55f
             ui.tvEmoji.text = "🐌"
-            ui.tvModeTitle.text = "MOD MELC"
-            ui.tvModeSub.text = "Așteaptă conexiunea cu scooterul"
+            ui.tvModeTitle.text = getString(R.string.mode_snail)
+            ui.tvModeSub.text = getString(R.string.mode_wait)
             return
         }
         ui.btnMode.alpha = 1f
         if (on) {
             ui.btnMode.setBackgroundResource(R.drawable.bg_rocket)
             ui.tvEmoji.text = "🚀"
-            ui.tvModeTitle.text = "MOD RACHETĂ"
-            ui.tvModeSub.text = "Viteză maximă · releu CUPLAT"
+            ui.tvModeTitle.text = getString(R.string.mode_rocket)
+            ui.tvModeSub.text = getString(R.string.mode_rocket_sub)
             ui.tvModeTitle.setTextColor(getColor(R.color.ew_rocket_b))
         } else {
             ui.btnMode.setBackgroundResource(R.drawable.bg_snail)
             ui.tvEmoji.text = "🐌"
-            ui.tvModeTitle.text = "MOD MELC"
-            ui.tvModeSub.text = "Viteză normală · releu OPRIT"
+            ui.tvModeTitle.text = getString(R.string.mode_snail)
+            ui.tvModeSub.text = getString(R.string.mode_snail_sub)
             ui.tvModeTitle.setTextColor(getColor(R.color.ew_green))
         }
     }
@@ -223,14 +239,14 @@ class MainActivity : Activity(), BleManager.Listener {
         val prev = shownState
         shownState = state
         val (text, color) = when (state) {
-            BleManager.Conn.OFF -> "●  Deconectat" to R.color.ew_gray
-            BleManager.Conn.BT_DISABLED -> "●  Bluetooth oprit – atinge aici" to R.color.ew_red
-            BleManager.Conn.SCANNING -> "●  Se caută scooterul…" to R.color.ew_gray
-            BleManager.Conn.CONNECTING -> "●  Se conectează…" to R.color.ew_gray
-            BleManager.Conn.AUTHENTICATING -> "●  Verificare securitate…" to R.color.ew_gray
-            BleManager.Conn.NEED_PIN -> "●  Introdu codul (atinge aici)" to R.color.ew_red
-            BleManager.Conn.LOCKED -> "●  Blocat $extra s – prea multe coduri greșite" to R.color.ew_red
-            BleManager.Conn.READY -> "●  Conectat la scooter" to R.color.ew_green
+            BleManager.Conn.OFF -> getString(R.string.conn_off) to R.color.ew_gray
+            BleManager.Conn.BT_DISABLED -> getString(R.string.conn_bt_off) to R.color.ew_red
+            BleManager.Conn.SCANNING -> getString(R.string.conn_scanning) to R.color.ew_gray
+            BleManager.Conn.CONNECTING -> getString(R.string.conn_connecting) to R.color.ew_gray
+            BleManager.Conn.AUTHENTICATING -> getString(R.string.conn_auth) to R.color.ew_gray
+            BleManager.Conn.NEED_PIN -> getString(R.string.conn_need_pin) to R.color.ew_red
+            BleManager.Conn.LOCKED -> getString(R.string.conn_locked, extra) to R.color.ew_red
+            BleManager.Conn.READY -> getString(R.string.conn_ready) to R.color.ew_green
         }
         ui.tvConn.text = text
         ui.tvConn.setTextColor(getColor(color))
@@ -245,7 +261,7 @@ class MainActivity : Activity(), BleManager.Listener {
             BleManager.Conn.NEED_PIN -> if (!pinPromptSnoozed || extra >= 0) showPinDialog(extra)
             BleManager.Conn.LOCKED -> {
                 pinDialog?.dismiss(); pinDialog = null
-                if (prev != BleManager.Conn.LOCKED) toast("Prea multe încercări greșite. Așteaptă $extra secunde.")
+                if (prev != BleManager.Conn.LOCKED) toast(getString(R.string.locked_toast, extra))
             }
             BleManager.Conn.READY -> { pinDialog?.dismiss(); pinDialog = null; ble.refresh() }
             else -> {}
@@ -259,14 +275,14 @@ class MainActivity : Activity(), BleManager.Listener {
             renderRf(status)
         }
         when (status.result) {
-            B.RES_PIN_OK -> toast("Codul a fost schimbat ✔")
-            B.RES_PIN_REMOVED -> toast("Codul a fost scos. Rămâne activă cheia unică a aplicației.")
-            B.RES_RF_LEARNED -> toast("Telecomanda a fost asociată ✔")
-            B.RES_RF_CLEARED -> toast("Telecomanda a fost ștearsă")
-            B.RES_RF_TIMEOUT -> toast("Nu s-a primit niciun semnal de la telecomandă.")
-            B.RES_RF_DISABLED -> toast("Modulul RF nu este activat în firmware (ENABLE_RF 1).")
-            B.RES_RF_LEARNING -> toast("Apasă acum butonul telecomenzii (${status.extra} s)…")
-            B.RES_BAD_MAC, B.RES_BAD_CMD, B.RES_NOT_AUTH -> toast("Comandă respinsă de placă.")
+            B.RES_PIN_OK -> toast(getString(R.string.pin_changed))
+            B.RES_PIN_REMOVED -> toast(getString(R.string.pin_removed))
+            B.RES_RF_LEARNED -> toast(getString(R.string.rf_learned))
+            B.RES_RF_CLEARED -> toast(getString(R.string.rf_cleared))
+            B.RES_RF_TIMEOUT -> toast(getString(R.string.rf_timeout))
+            B.RES_RF_DISABLED -> toast(getString(R.string.rf_disabled))
+            B.RES_RF_LEARNING -> toast(getString(R.string.rf_press, status.extra))
+            B.RES_BAD_MAC, B.RES_BAD_CMD, B.RES_NOT_AUTH -> toast(getString(R.string.cmd_rejected))
         }
     }
 
@@ -274,11 +290,11 @@ class MainActivity : Activity(), BleManager.Listener {
         val ready = s != null
         ui.btnChangePin.isEnabled = ready
         ui.btnRemovePin.isEnabled = ready && s!!.pinSet
-        ui.btnChangePin.text = if (s?.pinSet == false) "Setează un cod" else "Schimbă codul"
+        ui.btnChangePin.text = if (s?.pinSet == false) getString(R.string.btn_set_pin) else getString(R.string.btn_change_pin)
         ui.tvPinInfo.text = when {
-            s == null -> "Conectează-te la scooter pentru setări."
-            s.pinSet -> "Cod activ. Doar această aplicație + codul tău pot comanda scooterul."
-            else -> "Fără cod: doar această aplicație (cheie unică) se poate conecta."
+            s == null -> getString(R.string.pin_info_offline)
+            s.pinSet -> getString(R.string.pin_info_on)
+            else -> getString(R.string.pin_info_off)
         }
     }
 
@@ -288,10 +304,10 @@ class MainActivity : Activity(), BleManager.Listener {
         ui.btnRfClear.isEnabled = on && s!!.rfLearned
         ui.tvRf.text = when {
             s == null -> "—"
-            !s.rfEnabled -> "Neactivat în firmware. Pregătit pentru receptor 433 MHz (vezi README)."
-            s.rfLearning -> "Aștept semnal… apasă butonul telecomenzii."
-            s.rfLearned -> "Telecomandă asociată – un clic comută MELC/RACHETĂ."
-            else -> "Nicio telecomandă asociată."
+            !s.rfEnabled -> getString(R.string.rf_not_enabled)
+            s.rfLearning -> getString(R.string.rf_waiting)
+            s.rfLearned -> getString(R.string.rf_paired)
+            else -> getString(R.string.rf_none)
         }
     }
 
@@ -313,89 +329,89 @@ class MainActivity : Activity(), BleManager.Listener {
 
     private fun showPinDialog(triesLeft: Int) {
         if (pinDialog?.isShowing == true || isFinishing) return
-        val input = pinField("Codul scooterului")
-        val msg = if (triesLeft in 1..9) "Cod greșit. Mai ai $triesLeft încercări." else "Introdu codul de acces al scooterului."
+        val input = pinField(getString(R.string.hint_pin))
+        val msg = if (triesLeft in 1..9) getString(R.string.pin_wrong_tries, triesLeft) else getString(R.string.pin_enter)
         pinDialog = AlertDialog.Builder(this)
-            .setTitle("🔒 Cod de acces")
+            .setTitle(getString(R.string.pin_title))
             .setMessage(msg)
             .setView(column(input))
             .setCancelable(false)
-            .setPositiveButton("Conectează") { _, _ ->
+            .setPositiveButton(getString(R.string.btn_connect)) { _, _ ->
                 pinDialog = null
                 val p = input.text.toString()
                 pinPromptSnoozed = false
-                if (validPin(p)) ble.authenticate(p) else { toast("Codul are 4–16 cifre."); showPinDialog(triesLeft) }
+                if (validPin(p)) ble.authenticate(p) else { toast(getString(R.string.pin_digits)); showPinDialog(triesLeft) }
             }
-            .setNeutralButton("Am uitat codul") { _, _ -> pinDialog = null; recoverPin() }
-            .setNegativeButton("Mai târziu") { _, _ -> pinDialog = null; pinPromptSnoozed = true }
+            .setNeutralButton(getString(R.string.btn_forgot)) { _, _ -> pinDialog = null; recoverPin() }
+            .setNegativeButton(getString(R.string.btn_later)) { _, _ -> pinDialog = null; pinPromptSnoozed = true }
             .show()
     }
 
     private fun showChangePin() {
         if (!ble.isReady()) { notReady(); return }
-        val a = pinField("Cod nou (4–16 cifre)")
-        val b = pinField("Repetă codul nou")
+        val a = pinField(getString(R.string.hint_new_pin))
+        val b = pinField(getString(R.string.hint_repeat_pin))
         AlertDialog.Builder(this)
-            .setTitle("Cod nou")
+            .setTitle(getString(R.string.new_pin_title))
             .setView(column(a, b))
-            .setPositiveButton("Salvează") { _, _ ->
+            .setPositiveButton(getString(R.string.btn_save)) { _, _ ->
                 val p1 = a.text.toString(); val p2 = b.text.toString()
                 when {
-                    !validPin(p1) -> toast("Codul trebuie să aibă 4–16 cifre.")
-                    p1 != p2 -> toast("Codurile nu coincid.")
+                    !validPin(p1) -> toast(getString(R.string.pin_must_digits))
+                    p1 != p2 -> toast(getString(R.string.pin_mismatch))
                     !ble.changePin(p1) -> notReady()
                 }
             }
-            .setNegativeButton("Anulează", null)
+            .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
     }
 
     private fun confirmRemovePin() {
         if (!ble.isReady()) { notReady(); return }
         AlertDialog.Builder(this)
-            .setTitle("Scoți codul?")
-            .setMessage("Scooterul va putea fi comandat din această aplicație fără cod. Conexiunea rămâne protejată de cheia unică a aplicației.")
-            .setPositiveButton("Scoate codul") { _, _ ->
+            .setTitle(getString(R.string.remove_pin_title))
+            .setMessage(getString(R.string.remove_pin_msg))
+            .setPositiveButton(getString(R.string.btn_remove_pin)) { _, _ ->
                 if (!ble.removePin()) notReady()
                 store.appLock = false; ui.swAppLock.isChecked = false
             }
-            .setNegativeButton("Anulează", null)
+            .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
     }
 
     // ======================= email recuperare =======================
     private fun showEmailSettings() {
         val email = EditText(this).apply {
-            hint = "Email de recuperare"
+            hint = getString(R.string.btn_email)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             setText(store.recoveryEmail ?: "")
         }
         val info = TextView(this).apply {
-            text = "\nOpțional – trimitere automată prin Gmail:\n(cont Gmail + parolă de aplicație din Google › Securitate › Parole pentru aplicații)"
+            text = getString(R.string.email_gmail_info)
             textSize = 12f
         }
         val user = EditText(this).apply {
-            hint = "Cont Gmail expeditor"
+            hint = getString(R.string.hint_gmail)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             setText(store.smtpUser ?: "")
         }
         val pass = EditText(this).apply {
-            hint = if (store.smtpConfigured) "Parolă aplicație (salvată)" else "Parolă de aplicație (16 caractere)"
+            hint = if (store.smtpConfigured) getString(R.string.hint_app_pass_saved) else getString(R.string.hint_app_pass)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
         AlertDialog.Builder(this)
-            .setTitle("📧 Email de recuperare")
+            .setTitle(getString(R.string.email_title))
             .setView(column(email, info, user, pass))
-            .setPositiveButton("Salvează") { _, _ ->
+            .setPositiveButton(getString(R.string.btn_save)) { _, _ ->
                 val e = email.text.toString().trim()
-                if (e.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(e).matches()) { toast("Email invalid."); return@setPositiveButton }
+                if (e.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(e).matches()) { toast(getString(R.string.email_invalid)); return@setPositiveButton }
                 store.recoveryEmail = e
                 store.smtpUser = user.text.toString()
                 if (pass.text.isNotBlank()) store.smtpPass = pass.text.toString()
                 if (user.text.isBlank()) store.smtpPass = null
-                toast(if (e.isEmpty()) "Email șters." else "Email salvat ✔")
+                toast(if (e.isEmpty()) getString(R.string.email_deleted) else getString(R.string.email_saved))
             }
-            .setNegativeButton("Anulează", null)
+            .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
     }
 
@@ -403,24 +419,24 @@ class MainActivity : Activity(), BleManager.Listener {
         val pin = store.pin
         val email = store.recoveryEmail
         if (pin.isNullOrEmpty()) {
-            info("Recuperare cod",
-                "Codul nu este salvat pe acest telefon.\n\nReset din placă: cu scooterul pornit, ține apăsat butonul BOOT de pe ESP32 timp de 10 secunde (LED-ul clipește). Codul revine la cel implicit din fabrică.")
+            info(getString(R.string.recover_title),
+                getString(R.string.recover_not_saved))
             return
         }
         if (email.isNullOrEmpty()) {
-            info("Recuperare cod", "Nu ai setat un email de recuperare. Setează-l din „Email de recuperare” cât timp știi codul.\n\nAlternativ: reset din placă (BOOT 10 s).")
+            info(getString(R.string.recover_title), getString(R.string.recover_no_email))
             return
         }
-        val subject = "Earthwheel Boost – codul tău de acces"
-        val body = "Salut!\n\nCodul de acces pentru scooterul tău Earthwheel este: $pin\n\nDacă nu ai cerut acest email, schimbă codul din aplicație.\n\n— Earthwheel Boost"
+        val subject = getString(R.string.mail_subject)
+        val body = getString(R.string.mail_body, pin)
         if (store.smtpConfigured) {
-            toast("Se trimite emailul…")
+            toast(getString(R.string.mail_sending))
             val u = store.smtpUser!!; val pw = store.smtpPass!!
             io.execute {
                 val ok = try { MailSender.send(u, pw, email, subject, body); true } catch (e: Exception) { false }
                 runOnUiThread {
-                    if (ok) info("Email trimis", "Codul a fost trimis la ${mask(email)}.")
-                    else info("Eroare", "Emailul nu a putut fi trimis. Verifică internetul și parola de aplicație Gmail.")
+                    if (ok) info(getString(R.string.mail_sent_title), getString(R.string.mail_sent_msg, mask(email)))
+                    else info(getString(R.string.error_title), getString(R.string.mail_failed))
                 }
             }
         } else {
@@ -430,7 +446,7 @@ class MainActivity : Activity(), BleManager.Listener {
                 putExtra(Intent.EXTRA_SUBJECT, subject)
                 putExtra(Intent.EXTRA_TEXT, body)
             }
-            try { startActivity(i) } catch (_: Exception) { toast("Nu există o aplicație de email instalată.") }
+            try { startActivity(i) } catch (_: Exception) { toast(getString(R.string.no_mail_app)) }
         }
     }
 
@@ -441,24 +457,24 @@ class MainActivity : Activity(), BleManager.Listener {
 
     // ======================= blocare aplicație =======================
     private fun showAppLock() {
-        val input = pinField("Cod")
+        val input = pinField(getString(R.string.hint_code))
         AlertDialog.Builder(this)
             .setTitle("🔒 Earthwheel Boost")
-            .setMessage("Introdu codul pentru a deschide aplicația.")
+            .setMessage(getString(R.string.lock_msg))
             .setView(column(input))
             .setCancelable(false)
-            .setPositiveButton("Deschide") { _, _ ->
+            .setPositiveButton(getString(R.string.btn_open)) { _, _ ->
                 if (input.text.toString() == store.pin) {
                     unlocked = true
                     ensurePermissionsAndStart()
-                } else { toast("Cod greșit."); showAppLock() }
+                } else { toast(getString(R.string.code_wrong)); showAppLock() }
             }
-            .setNeutralButton("Am uitat codul") { _, _ ->
+            .setNeutralButton(getString(R.string.btn_forgot)) { _, _ ->
                 if (store.smtpConfigured && !store.recoveryEmail.isNullOrEmpty()) recoverPin()
-                else info("Recuperare cod", "Pentru siguranță, de pe ecranul blocat codul se poate trimite doar automat pe emailul de recuperare (Gmail configurat).\n\nAlternativ: reinstalează aplicația și resetează placa (BOOT 10 s).")
+                else info(getString(R.string.recover_title), getString(R.string.lock_recover_msg))
                 showAppLock()
             }
-            .setNegativeButton("Ieșire") { _, _ -> finish() }
+            .setNegativeButton(getString(R.string.btn_exit)) { _, _ -> finish() }
             .show()
     }
 
@@ -469,19 +485,19 @@ class MainActivity : Activity(), BleManager.Listener {
 
     private fun confirmForget() {
         AlertDialog.Builder(this)
-            .setTitle("Asociezi altă placă?")
-            .setMessage("Aplicația va uita placa actuală și codul salvat, apoi va căuta din nou.")
-            .setPositiveButton("Da") { _, _ -> ble.forgetDevice() }
-            .setNegativeButton("Anulează", null)
+            .setTitle(getString(R.string.forget_title))
+            .setMessage(getString(R.string.forget_msg))
+            .setPositiveButton(getString(R.string.btn_yes)) { _, _ -> ble.forgetDevice() }
+            .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
     }
 
     private fun info(title: String, msg: String) {
         if (isFinishing) return
-        AlertDialog.Builder(this).setTitle(title).setMessage(msg).setPositiveButton("OK", null).show()
+        AlertDialog.Builder(this).setTitle(title).setMessage(msg).setPositiveButton(android.R.string.ok, null).show()
     }
 
-    private fun notReady() = toast("Scooterul nu este conectat încă.")
+    private fun notReady() = toast(getString(R.string.not_ready))
     private fun toast(s: String) = Toast.makeText(this, s, Toast.LENGTH_LONG).show()
 
     companion object {

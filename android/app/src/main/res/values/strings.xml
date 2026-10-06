@@ -1,4 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Earthwheel Boost</string>
+    <string name="lang_switch">🇬🇷 Ελληνικά</string>
+    <string name="conn_starting">●  Se pornește…</string>
+    <string name="mode_snail">MOD MELC</string>
+    <string name="mode_rocket">MOD RACHETĂ</string>
+    <string name="mode_wait">Așteaptă conexiunea cu scooterul</string>
+    <string name="mode_rocket_sub">Viteză maximă · releu CUPLAT</string>
+    <string name="mode_snail_sub">Viteză normală · releu OPRIT</string>
+    <string name="sec_title">🔒  Securitate</string>
+    <string name="btn_change_pin">Schimbă codul</string>
+    <string name="btn_set_pin">Setează un cod</string>
+    <string name="btn_remove_pin">Scoate codul</string>
+    <string name="btn_email">Email de recuperare</string>
+    <string name="btn_recover">Am uitat codul – trimite pe email</string>
+    <string name="sw_app_lock">Cere codul la deschiderea aplicației</string>
+    <string name="rf_title">📡  Telecomandă RF</string>
+    <string name="btn_rf_learn">Asociază telecomanda</string>
+    <string name="btn_rf_clear">Șterge telecomanda</string>
+    <string name="btn_forget">Asociază altă placă</string>
+    <string name="perm_denied">Fără permisiunea Bluetooth aplicația nu se poate conecta la scooter.</string>
+    <string name="key_missing_title">Cheie lipsă</string>
+    <string name="key_missing_msg">Această copie a aplicației nu conține cheia de securitate (assets/ew_key.bin) și nu se poate conecta la scooter. Instalează APK-ul primit de la Claude sau compilează proiectul complet din arhivă.</string>
+    <string name="no_bt">Telefonul nu are Bluetooth.</string>
+    <string name="conn_off">●  Deconectat</string>
+    <string name="conn_bt_off">●  Bluetooth oprit – atinge aici</string>
+    <string name="conn_scanning">●  Se caută scooterul…</string>
+    <string name="conn_connecting">●  Se conectează…</string>
+    <string name="conn_auth">●  Verificare securitate…</string>
+    <string name="conn_need_pin">●  Introdu codul (atinge aici)</string>
+    <string name="conn_locked" formatted="true">●  Blocat %1$d s – prea multe coduri greșite</string>
+    <string name="conn_ready">●  Conectat la scooter</string>
+    <string name="locked_toast" formatted="true">Prea multe încercări greșite. Așteaptă %1$d secunde.</string>
+    <string name="pin_changed">Codul a fost schimbat ✔</string>
+    <string name="pin_removed">Codul a fost scos. Rămâne activă cheia unică a aplicației.</string>
+    <string name="rf_learned">Telecomanda a fost asociată ✔</string>
+    <string name="rf_cleared">Telecomanda a fost ștearsă</string>
+    <string name="rf_timeout">Nu s-a primit niciun semnal de la telecomandă.</string>
+    <string name="rf_disabled">Modulul RF nu este activat în firmware (ENABLE_RF 1).</string>
+    <string name="rf_press" formatted="true">Apasă acum butonul telecomenzii (%1$d s)…</string>
+    <string name="cmd_rejected">Comandă respinsă de placă.</string>
+    <string name="pin_info_offline">Conectează-te la scooter pentru setări.</string>
+    <string name="pin_info_on">Cod activ. Doar această aplicație + codul tău pot comanda scooterul.</string>
+    <string name="pin_info_off">Fără cod: doar această aplicație (cheie unică) se poate conecta.</string>
+    <string name="rf_not_enabled">Neactivat în firmware. Pregătit pentru receptor 433 MHz (vezi README).</string>
+    <string name="rf_waiting">Aștept semnal… apasă butonul telecomenzii.</string>
+    <string name="rf_paired">Telecomandă asociată – un clic comută MELC/RACHETĂ.</string>
+    <string name="rf_none">Nicio telecomandă asociată.</string>
+    <string name="hint_pin">Codul scooterului</string>
+    <string name="pin_wrong_tries" formatted="true">Cod greșit. Mai ai %1$d încercări.</string>
+    <string name="pin_enter">Introdu codul de acces al scooterului.</string>
+    <string name="pin_title">🔒 Cod de acces</string>
+    <string name="btn_connect">Conectează</string>
+    <string name="pin_digits">Codul are 4–16 cifre.</string>
+    <string name="btn_forgot">Am uitat codul</string>
+    <string name="btn_later">Mai târziu</string>
+    <string name="hint_new_pin">Cod nou (4–16 cifre)</string>
+    <string name="hint_repeat_pin">Repetă codul nou</string>
+    <string name="new_pin_title">Cod nou</string>
+    <string name="btn_save">Salvează</string>
+    <string name="pin_must_digits">Codul trebuie să aibă 4–16 cifre.</string>
+    <string name="pin_mismatch">Codurile nu coincid.</string>
+    <string name="btn_cancel">Anulează</string>
+    <string name="remove_pin_title">Scoți codul?</string>
+    <string name="remove_pin_msg">Scooterul va putea fi comandat din această aplicație fără cod. Conexiunea rămâne protejată de cheia unică a aplicației.</string>
+    <string name="hint_email">Email de recuperare</string>
+    <string name="email_gmail_info">\nOpțional – trimitere automată prin Gmail:\n(cont Gmail + parolă de aplicație din Google › Securitate › Parole pentru aplicații)</string>
+    <string name="hint_gmail">Cont Gmail expeditor</string>
+    <string name="hint_app_pass_saved">Parolă aplicație (salvată)</string>
+    <string name="hint_app_pass">Parolă de aplicație (16 caractere)</string>
+    <string name="email_title">📧 Email de recuperare</string>
+    <string name="email_invalid">Email invalid.</string>
+    <string name="email_deleted">Email șters.</string>
+    <string name="email_saved">Email salvat ✔</string>
+    <string name="recover_title">Recuperare cod</string>
+    <string name="recover_not_saved">Codul nu este salvat pe acest telefon.\n\nReset din placă: cu scooterul pornit, ține apăsat butonul BOOT de pe ESP32 timp de 10 secunde (LED-ul clipește). Codul revine la cel implicit din fabrică.</string>
+    <string name="recover_no_email">Nu ai setat un email de recuperare. Setează-l din „Email de recuperare” cât timp știi codul.\n\nAlternativ: reset din placă (BOOT 10 s).</string>
+    <string name="mail_subject">Earthwheel Boost – codul tău de acces</string>
+    <string name="mail_body" formatted="true">Salut!\n\nCodul de acces pentru scooterul tău Earthwheel este: %1$s\n\nDacă nu ai cerut acest email, schimbă codul din aplicație.\n\n— Earthwheel Boost</string>
+    <string name="mail_sending">Se trimite emailul…</string>
+    <string name="mail_sent_title">Email trimis</string>
+    <string name="mail_sent_msg" formatted="true">Codul a fost trimis la %1$s.</string>
+    <string name="error_title">Eroare</string>
+    <string name="mail_failed">Emailul nu a putut fi trimis. Verifică internetul și parola de aplicație Gmail.</string>
+    <string name="no_mail_app">Nu există o aplicație de email instalată.</string>
+    <string name="hint_code">Cod</string>
+    <string name="lock_msg">Introdu codul pentru a deschide aplicația.</string>
+    <string name="btn_open">Deschide</string>
+    <string name="code_wrong">Cod greșit.</string>
+    <string name="lock_recover_msg">Pentru siguranță, de pe ecranul blocat codul se poate trimite doar automat pe emailul de recuperare (Gmail configurat).\n\nAlternativ: reinstalează aplicația și resetează placa (BOOT 10 s).</string>
+    <string name="btn_exit">Ieșire</string>
+    <string name="forget_title">Asociezi altă placă?</string>
+    <string name="forget_msg">Aplicația va uita placa actuală și codul salvat, apoi va căuta din nou.</string>
+    <string name="btn_yes">Da</string>
+    <string name="not_ready">Scooterul nu este conectat încă.</string>
+    <string name="clearing_rf">Se șterge telecomanda…</string>
+    <string name="applock_need_pin">Conectează-te întâi la scooter cu un cod activ.</string>
 </resources>

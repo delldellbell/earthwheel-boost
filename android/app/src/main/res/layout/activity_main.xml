@@ -22,6 +22,23 @@
             android:adjustViewBounds="true"
             android:contentDescription="Earthwheel"
             android:src="@drawable/logo_earthwheel" />
+
+        <TextView
+            android:id="@+id/tvLang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="10dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="6dp"
+            android:text="@string/lang_switch"
+            android:textColor="@color/ew_black"
+            android:textSize="13sp" />
     </FrameLayout>
 
     <ScrollView
@@ -47,7 +64,7 @@
                 android:paddingTop="8dp"
                 android:paddingEnd="16dp"
                 android:paddingBottom="8dp"
-                android:text="●  Se pornește…"
+                android:text="@string/conn_starting"
                 android:textColor="@color/ew_gray"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -97,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="MOD MELC"
+                android:text="@string/mode_snail"
                 android:textColor="@color/ew_black"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -108,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:gravity="center"
-                android:text="Așteaptă conexiunea"
+                android:text="@string/mode_wait"
                 android:textColor="@color/ew_gray"
                 android:textSize="15sp" />
 
@@ -128,42 +145,42 @@
                         style="@style/EW.CardTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🔒  Securitate" />
+                        android:text="@string/sec_title" />
 
                     <TextView
                         android:id="@+id/tvPinInfo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Cod activ"
+                        android:text="@string/pin_info_offline"
                         android:textColor="@color/ew_gray"
                         android:textSize="13sp" />
 
                     <Button
                         android:id="@+id/btnChangePin"
                         style="@style/EW.Button"
-                        android:text="Schimbă codul" />
+                        android:text="@string/btn_change_pin" />
 
                     <Button
                         android:id="@+id/btnRemovePin"
                         style="@style/EW.Button"
-                        android:text="Scoate codul" />
+                        android:text="@string/btn_remove_pin" />
 
                     <Button
                         android:id="@+id/btnEmail"
                         style="@style/EW.Button"
-                        android:text="Email de recuperare" />
+                        android:text="@string/hint_email" />
 
                     <Button
                         android:id="@+id/btnRecover"
                         style="@style/EW.Button"
-                        android:text="Am uitat codul – trimite pe email" />
+                        android:text="@string/btn_recover" />
 
                     <Switch
                         android:id="@+id/swAppLock"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Cere codul la deschiderea aplicației"
+                        android:text="@string/sw_app_lock"
                         android:textColor="@color/ew_black" />
                 </LinearLayout>
             </LinearLayout>
@@ -184,7 +201,7 @@
                         style="@style/EW.CardTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📡  Telecomandă RF" />
+                        android:text="@string/rf_title" />
 
                     <TextView
                         android:id="@+id/tvRf"
@@ -197,12 +214,12 @@
                     <Button
                         android:id="@+id/btnRfLearn"
                         style="@style/EW.Button"
-                        android:text="Asociază telecomanda" />
+                        android:text="@string/btn_rf_learn" />
 
                     <Button
                         android:id="@+id/btnRfClear"
                         style="@style/EW.Button"
-                        android:text="Șterge telecomanda" />
+                        android:text="@string/btn_rf_clear" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -214,7 +231,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="12dp"
-                android:text="Asociază altă placă"
+                android:text="@string/btn_forget"
                 android:textColor="@color/ew_gray" />
 
             <TextView
@@ -223,7 +240,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="center"
-                android:text="Earthwheel Boost · v1.0"
+                android:text="Earthwheel Boost · v1.1"
                 android:textColor="#A0A8A5"
                 android:textSize="12sp" />
         </LinearLayout>
