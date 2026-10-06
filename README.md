@@ -42,7 +42,7 @@ Contactele releului (**COM + NO**) se pun **în paralel cu firul/comutatorul de 
 Cod implicit: **0101010101**.
 
 ## 3. Aplicația Android (APK)
-Aplicația merge pe **Android 7.0 sau mai nou**, în **română și greacă** (urmează limba telefonului; butonul 🇬🇷/🇷🇴 din colțul de sus schimbă limba) și nu folosește biblioteci externe (doar Android SDK + Kotlin).
+Aplicația merge pe **Android 7.0 sau mai nou**, în **greacă** (implicit) și **română** (butonul 🇷🇴/🇬🇷 din colțul de sus schimbă limba) și nu folosește biblioteci externe (doar Android SDK + Kotlin).
 APK-ul gata semnat (`EarthwheelBoost.apk`) se instalează direct: deschizi fișierul pe telefon → permiți „Instalare din surse necunoscute”.
 
 **Varianta A — GitHub:** workflow-ul compilează un APK *fără cheie* (`EarthwheelBoost-unsigned.apk`); cheia se adaugă și APK-ul se semnează separat, ca cheia să nu ajungă niciodată pe GitHub.

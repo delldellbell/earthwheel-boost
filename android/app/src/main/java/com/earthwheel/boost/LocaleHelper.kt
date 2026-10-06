@@ -4,13 +4,14 @@ import android.content.Context
 import android.content.res.Configuration
 import java.util.Locale
 
-/** Limba aplicației: română (implicit) sau greacă; fără alegere manuală urmează limba telefonului. */
+/** Limba aplicației: greacă (implicit) sau română, comutabilă din butonul din colțul de sus. */
 object LocaleHelper {
     private const val PREFS = "ewb_ui"
     private const val KEY = "lang"
+    private const val DEFAULT_LANG = "el"   // aplicația pornește în greacă
 
     fun wrap(base: Context): Context {
-        val lang = base.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY, null) ?: return base
+        val lang = base.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY, null) ?: DEFAULT_LANG
         val loc = Locale(lang)
         Locale.setDefault(loc)
         val cfg = Configuration(base.resources.configuration)
