@@ -1,0 +1,10 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+out/
+
+# cheia de securitate nu se publică
+firmware/EarthwheelBoost/secret.h
+android/app/src/main/assets/ew_key.bin

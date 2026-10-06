@@ -1,0 +1,50 @@
+name: Build Earthwheel Boost APK
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+          mkdir -p ../out
+          cp app/build/outputs/apk/release/app-release-unsigned.apk ../out/EarthwheelBoost-unsigned.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EarthwheelBoost-APK
+          path: out/EarthwheelBoost-unsigned.apk
+
+      # APK-ul final e publicat și pe ramura "apk-build" (descărcare ușoară)
+      - name: Publish APK to apk-build branch
+        run: |
+          cp out/EarthwheelBoost-unsigned.apk /tmp/EarthwheelBoost-unsigned.apk
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git checkout --orphan apk-build-tmp
+          git rm -rf . -q
+          cp /tmp/EarthwheelBoost-unsigned.apk ./EarthwheelBoost-unsigned.apk
+          git add -f EarthwheelBoost-unsigned.apk
+          git commit -m "APK build ${GITHUB_SHA}"
+          git push -f origin HEAD:apk-build

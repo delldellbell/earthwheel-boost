@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ew_mint">#8ECFB4</color>
+    <color name="ew_mint_light">#C9EBDD</color>
+    <color name="ew_green">#1E8C69</color>
+    <color name="ew_black">#231F20</color>
+    <color name="ew_gray">#6B7370</color>
+    <color name="ew_bg">#F3F6F5</color>
+    <color name="ew_white">#FFFFFF</color>
+    <color name="ew_rocket_a">#FF8A00</color>
+    <color name="ew_rocket_b">#FF2D55</color>
+    <color name="ew_red">#D93025</color>
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>

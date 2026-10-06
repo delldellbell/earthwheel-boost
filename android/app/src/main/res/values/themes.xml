@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.EarthwheelBoost" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/ew_green</item>
+        <item name="colorOnPrimary">@color/ew_white</item>
+        <item name="colorSecondary">@color/ew_mint</item>
+        <item name="colorPrimaryContainer">@color/ew_mint_light</item>
+        <item name="android:colorBackground">@color/ew_bg</item>
+        <item name="android:statusBarColor">@color/ew_white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/ew_bg</item>
+    </style>
+
+    <style name="EW.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/ew_white</item>
+        <item name="cardCornerRadius">22dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="contentPadding">16dp</item>
+    </style>
+
+    <style name="EW.Button" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:textColor">@color/ew_black</item>
+        <item name="cornerRadius">14dp</item>
+    </style>
+
+    <style name="EW.CardTitle">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ew_black</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+</resources>
