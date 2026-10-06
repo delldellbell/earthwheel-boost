@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.earthwheel.boost"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -30,9 +30,6 @@ android {
         jvmTarget = "17"
     }
 
-    buildFeatures {
-        viewBinding = true
-    }
 
     packaging {
         resources {
@@ -52,11 +49,5 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
-    // trimitere automată email de recuperare (SMTP Gmail, opțional)
-    implementation("com.sun.mail:android-mail:1.6.7")
-    implementation("com.sun.mail:android-activation:1.6.7")
+    // fără biblioteci externe: doar Android SDK + Kotlin
 }

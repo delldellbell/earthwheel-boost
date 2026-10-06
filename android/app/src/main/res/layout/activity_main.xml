@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ew_bg"
@@ -53,12 +52,12 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 style="@style/EW.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                app:contentPadding="8dp">
+                android:padding="8dp">
 
                 <ImageView
                     android:id="@+id/imgScooter"
@@ -68,7 +67,7 @@
                     android:contentDescription="Scooter"
                     android:scaleType="fitCenter"
                     android:src="@drawable/scooter" />
-            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
             <!-- Butonul principal MELC / RACHETĂ -->
             <FrameLayout
@@ -81,7 +80,7 @@
                 android:clickable="true"
                 android:elevation="10dp"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless">
+                android:foreground="?android:attr/selectableItemBackgroundBorderless">
 
                 <TextView
                     android:id="@+id/tvEmoji"
@@ -114,7 +113,7 @@
                 android:textSize="15sp" />
 
             <!-- Securitate -->
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 style="@style/EW.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -139,27 +138,27 @@
                         android:textColor="@color/ew_gray"
                         android:textSize="13sp" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btnChangePin"
                         style="@style/EW.Button"
                         android:text="Schimbă codul" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btnRemovePin"
                         style="@style/EW.Button"
                         android:text="Scoate codul" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btnEmail"
                         style="@style/EW.Button"
                         android:text="Email de recuperare" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btnRecover"
                         style="@style/EW.Button"
                         android:text="Am uitat codul – trimite pe email" />
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
+                    <Switch
                         android:id="@+id/swAppLock"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -167,10 +166,10 @@
                         android:text="Cere codul la deschiderea aplicației"
                         android:textColor="@color/ew_black" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
             <!-- Telecomandă RF -->
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 style="@style/EW.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -195,21 +194,22 @@
                         android:textColor="@color/ew_gray"
                         android:textSize="13sp" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btnRfLearn"
                         style="@style/EW.Button"
                         android:text="Asociază telecomanda" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btnRfClear"
                         style="@style/EW.Button"
                         android:text="Șterge telecomanda" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/btnForget"
-                style="@style/Widget.Material3.Button.TextButton"
+                style="@android:style/Widget.Material.Button.Borderless"
+                android:textAllCaps="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

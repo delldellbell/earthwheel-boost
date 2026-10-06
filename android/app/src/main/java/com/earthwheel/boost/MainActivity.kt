@@ -20,18 +20,36 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import android.app.Activity
+import android.app.AlertDialog
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.Switch
 import com.earthwheel.boost.BleManager.Companion as B
-import com.earthwheel.boost.databinding.ActivityMainBinding
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.concurrent.Executors
 
-class MainActivity : AppCompatActivity(), BleManager.Listener {
+class MainActivity : Activity(), BleManager.Listener {
 
-    private lateinit var ui: ActivityMainBinding
+    /** referințe la elementele din activity_main.xml */
+    private class Views(a: Activity) {
+        val tvConn: TextView = a.findViewById(R.id.tvConn)
+        val btnMode: FrameLayout = a.findViewById(R.id.btnMode)
+        val tvEmoji: TextView = a.findViewById(R.id.tvEmoji)
+        val tvModeTitle: TextView = a.findViewById(R.id.tvModeTitle)
+        val tvModeSub: TextView = a.findViewById(R.id.tvModeSub)
+        val tvPinInfo: TextView = a.findViewById(R.id.tvPinInfo)
+        val btnChangePin: Button = a.findViewById(R.id.btnChangePin)
+        val btnRemovePin: Button = a.findViewById(R.id.btnRemovePin)
+        val btnEmail: Button = a.findViewById(R.id.btnEmail)
+        val btnRecover: Button = a.findViewById(R.id.btnRecover)
+        val swAppLock: Switch = a.findViewById(R.id.swAppLock)
+        val tvRf: TextView = a.findViewById(R.id.tvRf)
+        val btnRfLearn: Button = a.findViewById(R.id.btnRfLearn)
+        val btnRfClear: Button = a.findViewById(R.id.btnRfClear)
+        val btnForget: Button = a.findViewById(R.id.btnForget)
+    }
+
+    private lateinit var ui: Views
     private lateinit var store: SecureStore
     private lateinit var ble: BleManager
 
@@ -42,16 +60,17 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
     private var keyOk = false              // cheia aplicației e prezentă în APK
     private val io = Executors.newSingleThreadExecutor()
 
-    private val permLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { res ->
-        if (res.values.all { it }) startBle()
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != REQ_PERMS) return
+        if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) startBle()
         else toast("Fără permisiunea Bluetooth aplicația nu se poate conecta la scooter.")
     }
 
-    private val btEnableLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
+    @Deprecated("Activity API")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION") super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_BT) return
         if (btAdapter()?.isEnabled == true) ble.start()
         else onConnState(BleManager.Conn.BT_DISABLED, 0)
     }
@@ -68,8 +87,8 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
     // ======================= ciclu de viață =======================
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ui = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(ui.root)
+        setContentView(R.layout.activity_main)
+        ui = Views(this)
         store = SecureStore(this)
         ble = BleManager(applicationContext, store, this)
         keyOk = Crypto.init(applicationContext)
@@ -102,9 +121,9 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
         renderSecurity(null)
         renderRf(null)
 
-        ContextCompat.registerReceiver(
-            this, btReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED
-        )
+        val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+        if (Build.VERSION.SDK_INT >= 33) registerReceiver(btReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        else registerReceiver(btReceiver, filter)
 
         if (!keyOk) {
             info("Cheie lipsă", "Această copie a aplicației nu conține cheia de securitate (assets/ew_key.bin) și nu se poate conecta la scooter. Instalează APK-ul primit de la Claude sau compilează proiectul complet din arhivă.")
@@ -139,9 +158,9 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
     private fun ensurePermissionsAndStart() {
         if (!keyOk) return
         val missing = requiredPerms().filter {
-            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+            checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED
         }
-        if (missing.isEmpty()) startBle() else permLauncher.launch(missing.toTypedArray())
+        if (missing.isEmpty()) startBle() else requestPermissions(missing.toTypedArray(), REQ_PERMS)
     }
 
     private fun startBle() {
@@ -149,7 +168,9 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
         if (adapter == null) { toast("Telefonul nu are Bluetooth."); return }
         if (!adapter.isEnabled) {
             onConnState(BleManager.Conn.BT_DISABLED, 0)
-            try { btEnableLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)) } catch (_: SecurityException) { }
+            try {
+                @Suppress("DEPRECATION") startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQ_BT)
+            } catch (_: Exception) { }
             return
         }
         ble.start()
@@ -185,13 +206,13 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
             ui.tvEmoji.text = "🚀"
             ui.tvModeTitle.text = "MOD RACHETĂ"
             ui.tvModeSub.text = "Viteză maximă · releu CUPLAT"
-            ui.tvModeTitle.setTextColor(ContextCompat.getColor(this, R.color.ew_rocket_b))
+            ui.tvModeTitle.setTextColor(getColor(R.color.ew_rocket_b))
         } else {
             ui.btnMode.setBackgroundResource(R.drawable.bg_snail)
             ui.tvEmoji.text = "🐌"
             ui.tvModeTitle.text = "MOD MELC"
             ui.tvModeSub.text = "Viteză normală · releu OPRIT"
-            ui.tvModeTitle.setTextColor(ContextCompat.getColor(this, R.color.ew_green))
+            ui.tvModeTitle.setTextColor(getColor(R.color.ew_green))
         }
     }
 
@@ -212,7 +233,7 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
             BleManager.Conn.READY -> "●  Conectat la scooter" to R.color.ew_green
         }
         ui.tvConn.text = text
-        ui.tvConn.setTextColor(ContextCompat.getColor(this, color))
+        ui.tvConn.setTextColor(getColor(color))
 
         if (state != BleManager.Conn.READY) {
             renderMode(false, false)
@@ -294,7 +315,7 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
         if (pinDialog?.isShowing == true || isFinishing) return
         val input = pinField("Codul scooterului")
         val msg = if (triesLeft in 1..9) "Cod greșit. Mai ai $triesLeft încercări." else "Introdu codul de acces al scooterului."
-        pinDialog = MaterialAlertDialogBuilder(this)
+        pinDialog = AlertDialog.Builder(this)
             .setTitle("🔒 Cod de acces")
             .setMessage(msg)
             .setView(column(input))
@@ -314,7 +335,7 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
         if (!ble.isReady()) { notReady(); return }
         val a = pinField("Cod nou (4–16 cifre)")
         val b = pinField("Repetă codul nou")
-        MaterialAlertDialogBuilder(this)
+        AlertDialog.Builder(this)
             .setTitle("Cod nou")
             .setView(column(a, b))
             .setPositiveButton("Salvează") { _, _ ->
@@ -331,7 +352,7 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
 
     private fun confirmRemovePin() {
         if (!ble.isReady()) { notReady(); return }
-        MaterialAlertDialogBuilder(this)
+        AlertDialog.Builder(this)
             .setTitle("Scoți codul?")
             .setMessage("Scooterul va putea fi comandat din această aplicație fără cod. Conexiunea rămâne protejată de cheia unică a aplicației.")
             .setPositiveButton("Scoate codul") { _, _ ->
@@ -362,7 +383,7 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
             hint = if (store.smtpConfigured) "Parolă aplicație (salvată)" else "Parolă de aplicație (16 caractere)"
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
-        MaterialAlertDialogBuilder(this)
+        AlertDialog.Builder(this)
             .setTitle("📧 Email de recuperare")
             .setView(column(email, info, user, pass))
             .setPositiveButton("Salvează") { _, _ ->
@@ -421,7 +442,7 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
     // ======================= blocare aplicație =======================
     private fun showAppLock() {
         val input = pinField("Cod")
-        MaterialAlertDialogBuilder(this)
+        AlertDialog.Builder(this)
             .setTitle("🔒 Earthwheel Boost")
             .setMessage("Introdu codul pentru a deschide aplicația.")
             .setView(column(input))
@@ -447,7 +468,7 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
     }
 
     private fun confirmForget() {
-        MaterialAlertDialogBuilder(this)
+        AlertDialog.Builder(this)
             .setTitle("Asociezi altă placă?")
             .setMessage("Aplicația va uita placa actuală și codul salvat, apoi va căuta din nou.")
             .setPositiveButton("Da") { _, _ -> ble.forgetDevice() }
@@ -457,9 +478,14 @@ class MainActivity : AppCompatActivity(), BleManager.Listener {
 
     private fun info(title: String, msg: String) {
         if (isFinishing) return
-        MaterialAlertDialogBuilder(this).setTitle(title).setMessage(msg).setPositiveButton("OK", null).show()
+        AlertDialog.Builder(this).setTitle(title).setMessage(msg).setPositiveButton("OK", null).show()
     }
 
     private fun notReady() = toast("Scooterul nu este conectat încă.")
     private fun toast(s: String) = Toast.makeText(this, s, Toast.LENGTH_LONG).show()
+
+    companion object {
+        private const val REQ_PERMS = 1
+        private const val REQ_BT = 2
+    }
 }
